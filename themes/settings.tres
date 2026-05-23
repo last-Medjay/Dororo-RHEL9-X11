@@ -1,13 +1,13 @@
-[gd_resource type="Theme" load_steps=49 format=3 uid="uid://djmv4w4gt1hm6"]
+[gd_resource type="Theme" load_steps=49 format=3]
 
-[ext_resource type="FontFile" uid="uid://cxesm3f1vqnpc" path="res://fonts/MSYH.TTC" id="1_m5218"]
-[ext_resource type="Texture2D" uid="uid://cnghn2ud2bxes" path="res://images/icons/ui/settings/check.png" id="2_won48"]
-[ext_resource type="Texture2D" uid="uid://dtsumptp2p0uf" path="res://images/icons/ui/settings/check_default.png" id="3_76t1d"]
-[ext_resource type="Texture2D" uid="uid://dfb7tek8sb5qj" path="res://images/icons/ui/settings/grabber.png" id="4_76t1d"]
-[ext_resource type="FontFile" uid="uid://dlfas555fcata" path="res://fonts/MSYHBD.TTC" id="4_gknpa"]
-[ext_resource type="Texture2D" uid="uid://dyrtxfinr8srb" path="res://images/icons/ui/settings/grabber_disabled.png" id="5_gknpa"]
-[ext_resource type="Texture2D" uid="uid://dixxulp2j824w" path="res://images/icons/ui/settings/radio_checked.png" id="7_qe2iv"]
-[ext_resource type="Texture2D" uid="uid://dcbetmnsntcbf" path="res://images/icons/ui/settings/radio.png" id="8_wynsm"]
+[ext_resource type="FontFile" path="res://fonts/NotoSansSC-Regular.otf" id="1_m5218"]
+[ext_resource type="Texture2D" path="res://images/icons/ui/settings/check.png" id="2_won48"]
+[ext_resource type="Texture2D" path="res://images/icons/ui/settings/check_default.png" id="3_76t1d"]
+[ext_resource type="Texture2D" path="res://images/icons/ui/settings/grabber.png" id="4_76t1d"]
+[ext_resource type="FontFile" path="res://fonts/NotoSansSC-Bold.otf" id="4_gknpa"]
+[ext_resource type="Texture2D" path="res://images/icons/ui/settings/grabber_disabled.png" id="5_gknpa"]
+[ext_resource type="Texture2D" path="res://images/icons/ui/settings/radio_checked.png" id="7_qe2iv"]
+[ext_resource type="Texture2D" path="res://images/icons/ui/settings/radio.png" id="8_wynsm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wynsm"]
 

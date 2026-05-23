@@ -7,10 +7,9 @@ func _ready() -> void:
 func _on_setting_button_toggled(toggled_on: bool):
 	visible = toggled_on
 	if toggled_on:
-		# Force focus + raise: borderless top-level Windows under WSLg's XWayland
+		# Force focus: borderless top-level Windows under WSLg's XWayland
 		# don't always grab focus, so clicks fall through to the main window.
 		grab_focus()
-		move_to_foreground()
 
 func _on_close_button_pressed():
 	visible = false

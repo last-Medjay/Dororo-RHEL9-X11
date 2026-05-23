@@ -59,11 +59,20 @@ If you'd rather build the binary yourself (or modify the code), follow [`doc/bui
 
 ---
 
-## Why the Live2D `.so` isn't in this repo
+## About the bundled binaries (licensing notes)
 
-`gd_cubism` statically links the Live2D Cubism Native SDK, which is Live2D's proprietary code. Their license forbids redistribution of the SDK or its compiled binaries. Building from source against an SDK you accepted the EULA for yourself is fine; checking the resulting `.so` into a public repo is not.
+This repository ships **source only** — `libgd_cubism.linux.release.x86_64.so` is not committed to the git tree. The compiled binary lives in the [GitHub Release](../../releases) tarball alongside the rest of the runtime.
 
-The pre-built binary in Releases is a personal-use distribution under the same terms — if you intend to use Dororo commercially, read [Live2D's license](https://www.live2d.com/sdk/download/native/) first.
+Two reasons for the source / binary split:
+
+1. **Git hygiene** — binary blobs bloat repository history and slow clones. The standard pattern for Godot projects with native plugins is to ship binaries via Releases.
+2. **License clarity** — keeping the binary out of the source tree makes the boundary visible. The pre-built `.so` in Releases is a compiled application binary that statically embeds Live2D Cubism Core; redistributing that binary is **permitted** under Live2D's [Free Material License](https://www.live2d.com/sdk/download/native/) for personal / non-commercial publishing. Redistributing the Cubism SDK *source package* (headers, libs, the `.zip` you download from live2d.com) is **not** permitted under any tier.
+
+If you plan to use Dororo commercially, read Live2D's full [Free Material License Agreement](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) first — there are revenue thresholds above which a paid Publishing License is required.
+
+## Fonts
+
+This fork replaces upstream's bundled **Microsoft YaHei** (`MSYH.TTC` / `MSYHBD.TTC`) with **[Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC)** Regular + Bold, distributed under the [SIL Open Font License 1.1](fonts/LICENSE-NotoSansSC.txt). The YaHei fonts upstream ships are Windows system fonts whose EULA prohibits redistribution outside of Windows; Noto Sans SC has equivalent CJK coverage and an open license that allows free redistribution.
 
 ---
 

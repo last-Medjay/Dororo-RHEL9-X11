@@ -59,11 +59,20 @@ chmod +x Dororo.x86_64
 
 ---
 
-## 为什么 Live2D `.so` 不在本仓库中
+## 关于打包的二进制（许可说明）
 
-`gd_cubism` 静态链接 Live2D Cubism Native SDK，即 Live2D 的专有代码。其许可禁止重新分发 SDK 或其编译产物。你自己接受 EULA 后用该 SDK 从源代码构建是允许的；将生成的 `.so` 提交到公共仓库则不允许。
+本仓库**只包含源代码** —— `libgd_cubism.linux.release.x86_64.so` 不提交到 git 仓库中。编译好的二进制在 [GitHub Release](../../releases) 的 tarball 里随其他运行时一起提供。
 
-Releases 中的预构建二进制是基于相同条款的个人使用分发 —— 如果你打算商业使用 Dororo，请先阅读 [Live2D 的许可证](https://www.live2d.com/sdk/download/native/)。
+源代码 / 二进制分离的两个原因：
+
+1. **Git 卫生** —— 二进制 blob 会让仓库历史膨胀、克隆变慢。带原生插件的 Godot 项目，标准做法都是用 Releases 分发二进制。
+2. **许可清晰** —— 把二进制留在源代码树之外可以让边界一目了然。Release 中的预编译 `.so` 是一个静态嵌入了 Live2D Cubism Core 的应用二进制；在 Live2D 的 [Free Material License](https://www.live2d.com/sdk/download/native/) 下，**允许**用于个人 / 非商业出版的二进制重新分发。但重新分发 Cubism SDK 的**源代码包**（头文件、libs、你从 live2d.com 下载的 `.zip`）则在任何级别下**都不允许**。
+
+如果你打算商业使用 Dororo，请先阅读 Live2D 完整的 [Free Material License Agreement](https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html) —— 超过特定营收阈值后需要购买 Publishing License。
+
+## 字体
+
+本分支将上游打包的 **Microsoft YaHei**（`MSYH.TTC` / `MSYHBD.TTC`）替换为 **[Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC)** Regular + Bold，遵循 [SIL Open Font License 1.1](fonts/LICENSE-NotoSansSC.txt) 分发。上游打包的雅黑字体是 Windows 系统字体，其 EULA 禁止在 Windows 之外重新分发；Noto Sans SC 有等同的 CJK 覆盖范围，且采用允许自由重新分发的开放许可证。
 
 ---
 
