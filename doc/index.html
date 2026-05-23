@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dororo Project Manual — Index</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,30..100,0..1&family=Source+Serif+4:opsz,wght@8..60,200..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:        #f5efe0;
+  --paper-fold:   #ede5d0;
+  --ink:          #1a1a2e;
+  --ink-soft:     #46466c;
+  --accent:       #c44536;
+  --accent-soft:  #db7263;
+  --link:         #2e5077;
+  --link-hover:   #c44536;
+  --rule:         #c9bfa6;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100vh;
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: var(--ink);
+  background: var(--paper-fold);
+}
+
+body {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(at 20% 0%, rgba(196,69,54,0.06), transparent 50%),
+    radial-gradient(at 80% 100%, rgba(46,80,119,0.06), transparent 50%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.18  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 80px 28px 60px;
+  width: 100%;
+}
+
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 16px;
+  margin-bottom: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Fraunces', serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 8px 0 16px;
+  font-variation-settings: "SOFT" 30, "WONK" 1;
+}
+.subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink-soft);
+  margin-bottom: 56px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule);
+  max-width: 540px;
+}
+
+.chapters {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+.chapter {
+  display: flex;
+  gap: 28px;
+  padding: 28px 32px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  align-items: flex-start;
+}
+.chapter:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 32px -16px rgba(196,69,54,0.28);
+}
+
+.num {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--accent);
+  flex-shrink: 0;
+  min-width: 72px;
+}
+
+.chapter-body { flex: 1; }
+.chapter h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.chapter p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.chapter .meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 14px;
+  color: var(--accent);
+}
+
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 24px 28px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  max-width: 880px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  main { padding: 48px 20px 40px; }
+  h1 { font-size: 44px; }
+  .subtitle { font-size: 18px; }
+  .chapter { flex-direction: column; gap: 12px; padding: 20px 22px; }
+  .num { font-size: 40px; min-width: 0; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="masthead">
+    <span>Dororo Project Manual</span>
+    <span>Index of Contents</span>
+  </header>
+
+  <h1>The Doro,<br>on Linux.</h1>
+  <p class="subtitle">A small handbook for porting and running a Live2D desktop pet on Red Hat Enterprise Linux 9 &mdash; for the curious, the cautious, and the click-throughers.</p>
+
+  <div class="chapters">
+
+    <a class="chapter" href="build-guide.html">
+      <div class="num">I.</div>
+      <div class="chapter-body">
+        <h2>Building from Source</h2>
+        <p>Every step required to take the modified Dororo source tree, compile <code>gd_cubism</code> against the Live2D Cubism Native SDK, and produce a ready-to-run Linux executable. Written for someone who has never opened Godot or touched Live2D before.</p>
+        <div class="meta">16 sections · ~17 KB · sudo and SDK access required</div>
+      </div>
+    </a>
+
+    <a class="chapter" href="../prebuilt/deploy-guide.html">
+      <div class="num">II.</div>
+      <div class="chapter-body">
+        <h2>Deploying the Pre-built Binary</h2>
+        <p>Take the contents of <code>prebuilt/</code>, copy them to a fresh RHEL 9 box, install the runtime dependencies, log in to an X11 session, run. No build required.</p>
+        <div class="meta">In prebuilt/ alongside the binary</div>
+      </div>
+    </a>
+
+    <a class="chapter" href="about.html">
+      <div class="num">III.</div>
+      <div class="chapter-body">
+        <h2>About the Original Project</h2>
+        <p>The original Dororo project's notes, credits, license, and acknowledgements &mdash; preserved unchanged from the upstream source.</p>
+        <div class="meta">Original author's README</div>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<footer>Dororo · RHEL 9 port · documentation set v1</footer>
+</body>
+</html>

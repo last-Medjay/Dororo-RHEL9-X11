@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building Dororo from Source on RHEL 9 — Beginner&#x27;s Guide — Dororo</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,30..100,0..1&family=Source+Serif+4:opsz,wght@8..60,200..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:        #f5efe0;
+  --paper-fold:   #ede5d0;
+  --ink:          #1a1a2e;
+  --ink-soft:     #46466c;
+  --accent:       #c44536;
+  --accent-soft:  #db7263;
+  --link:         #2e5077;
+  --link-hover:   #c44536;
+  --rule:         #c9bfa6;
+  --mono-bg:      #1c1a1a;
+  --mono-fg:      #f5efe0;
+  --mono-keyword: #d97757;
+  --shadow:       0 1px 0 rgba(0,0,0,0.04), 0 8px 24px -16px rgba(26,26,46,0.18);
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('https://fonts.gstatic.com/s/fraunces/v34/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+  font-variation-settings: "SOFT" 50, "WONK" 0;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('https://fonts.gstatic.com/s/sourceserif4/v8/vEFy2_tTDB4M7-auWDN0ahZJW3IX2ih5nk3AucvUHf6OAVIJmeUDygwjihdqrhxXD-wGvjU.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--paper-fold); }
+
+body {
+  font-family: 'Source Serif 4', 'EB Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper);
+  background-image:
+    radial-gradient(at top left, rgba(255,255,255,0.4), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.18  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  margin: 0;
+  padding: 0;
+  counter-reset: h2counter;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 80px 28px 120px;
+  position: relative;
+}
+
+/* Masthead */
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 16px;
+  margin-bottom: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Fraunces', serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.masthead .vol { font-style: italic; letter-spacing: 0.08em; }
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 8px 0 12px;
+  font-variation-settings: "SOFT" 30, "WONK" 1;
+}
+h1 + p, h1 + blockquote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.2em;
+  color: var(--ink-soft);
+  margin-top: 0;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+}
+
+h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 64px 0 16px;
+  padding-top: 8px;
+  counter-increment: h2counter;
+  position: relative;
+}
+h2::before {
+  content: counter(h2counter, decimal-leading-zero);
+  position: absolute;
+  left: -88px;
+  top: 14px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+
+/* If h2 starts with a literal number "1.", "2." etc — leave them alone */
+h2 + p { margin-top: 0; }
+
+h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 36px 0 12px;
+}
+h4 {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 18px;
+  margin: 24px 0 8px;
+  color: var(--ink);
+}
+
+p { margin: 12px 0; }
+p, li { font-feature-settings: "kern", "liga", "onum"; }
+
+ul, ol { padding-left: 22px; margin: 12px 0; }
+li { margin: 4px 0; }
+li > p { margin: 4px 0; }
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(46,80,119,0.45);
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+a:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+}
+
+/* Inline code */
+code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.86em;
+  background: var(--paper-fold);
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+}
+
+/* Block code */
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--mono-bg);
+  color: var(--mono-fg);
+  padding: 20px 24px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 18px -8px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+pre::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--accent);
+  border-radius: 4px 0 0 4px;
+}
+pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 16px;
+  background: rgba(255,255,255,0.35);
+  box-shadow: var(--shadow);
+}
+thead { background: var(--ink); color: var(--paper); }
+th {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 14px;
+  text-align: left;
+  border: none;
+}
+td {
+  padding: 12px 14px;
+  border-top: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.5;
+}
+tbody tr:nth-child(even) td { background: rgba(237,229,208,0.4); }
+td code { font-size: 0.85em; }
+
+/* Blockquote as side-note callout */
+blockquote {
+  margin: 24px 0;
+  padding: 16px 22px 16px 26px;
+  background: rgba(196,69,54,0.06);
+  border-left: 3px solid var(--accent);
+  color: var(--ink);
+  font-style: italic;
+}
+blockquote p:first-child { margin-top: 0; }
+blockquote p:last-child  { margin-bottom: 0; }
+blockquote strong { font-style: normal; }
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 56px 0;
+  height: 12px;
+}
+hr::after {
+  content: '◆ ◆ ◆';
+  color: var(--rule);
+  letter-spacing: 16px;
+  font-size: 10px;
+}
+
+/* Footer */
+.colophon {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+/* small-screen */
+@media (max-width: 880px) {
+  main { padding: 48px 20px 80px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 24px; margin-top: 48px; }
+  h2::before {
+    position: static;
+    display: block;
+    margin-bottom: 4px;
+  }
+  pre { margin: 18px 0; font-size: 13px; padding: 16px 18px; }
+  table { font-size: 14px; }
+  th, td { padding: 8px 10px; }
+  body { font-size: 17px; }
+}
+
+@media print {
+  body { background: white; }
+  pre { background: #1c1a1a; color: #f5efe0; box-shadow: none; }
+  a { color: var(--ink); text-decoration: none; }
+  h2 { page-break-after: avoid; }
+  pre, table { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="masthead">
+    <span>Dororo Project Manual</span>
+    <span class="vol">No. I — Building from Source</span>
+  </header>
+  <h1>Building Dororo from Source on RHEL 9 — Beginner's Guide</h1>
+<p>This guide walks you through building Dororo for RHEL 9 from scratch. <strong>No Godot, Live2D, or C# experience required</strong> — every step is explained, every command is given verbatim. Expect ~1–2 hours including downloads.</p>
+<p>If you just want the pre-built binary, skip this and use the deployment tarball plus <code>README-RHEL.md</code> in the <code>export/</code> folder.</p>
+<hr />
+<h2>1. What is Dororo?</h2>
+<p>Dororo is a <strong>desktop pet</strong> — a small animated Live2D character (Doro) that floats on your desktop in a transparent window. You can drag her around, she follows your cursor with her gaze, plays expressions, and interacts with mouse clicks.</p>
+<p>The original project was Windows-only. This version is ported to Linux (X11) on RHEL 9.</p>
+<h3>The technology stack — one paragraph each</h3>
+<ul>
+<li><strong>Godot Engine</strong> — a free, open-source game engine (think Unity but smaller and FOSS). Dororo is built on Godot 4.4.</li>
+<li><strong>Godot .NET</strong> — a special build of Godot that supports C# scripting. The original project mixes GDScript (Godot's own language) and C# for Windows-specific window manipulation. We have to use the .NET build, not the regular one.</li>
+<li><strong>GDScript</strong> — Godot's built-in Python-flavored scripting language. Most of Dororo's game logic is in GDScript.</li>
+<li><strong>GDExtension</strong> — Godot's plugin mechanism for native C++ libraries. The Live2D plugin uses this.</li>
+<li><strong>gd_cubism</strong> — an open-source GDExtension by MizunagiKB that lets Godot render Live2D Cubism models. We build it from source.</li>
+<li><strong>Live2D Cubism Native SDK</strong> — proprietary SDK from Live2D that <code>gd_cubism</code> links against. <strong>It's free for personal use but requires accepting Live2D's license</strong>. There is no way around this — Live2D forbids redistributing it.</li>
+<li><strong>scons</strong> — the build system <code>gd_cubism</code> uses. Like <code>make</code>, but Python-based.</li>
+<li><strong>.NET 8 SDK</strong> — for compiling the C# parts of Dororo.</li>
+</ul>
+<hr />
+<h2>2. Before you start</h2>
+<p>You need:</p>
+<ul>
+<li><strong>A RHEL 9 machine</strong> (or WSL 2 with RHEL 9). Other recent Red-Hat-family distros (Fedora, AlmaLinux, Rocky) should also work with minor tweaks. Ubuntu/Debian users need to translate the <code>dnf</code> commands to <code>apt</code>.</li>
+<li><strong>Sudo access</strong> for installing system packages.</li>
+<li><strong>~5 GB free disk</strong> for the toolchain + source + intermediate builds.</li>
+<li><strong>An internet connection</strong> with access to GitHub, the Godot website, and <code>live2d.com</code>.</li>
+<li><strong>A graphical session</strong> if you want to actually <em>see</em> the pet running (X11; see Section 9 for Wayland caveats).</li>
+</ul>
+<p>The terminal commands assume you start from your home directory (<code>cd ~</code>). Run each block as-is; lines starting with <code>#</code> are comments you don't have to type.</p>
+<hr />
+<h2>3. Install system dependencies</h2>
+<p>These are libraries the build tools and the runtime need:</p>
+<pre><code class="language-bash">sudo dnf install -y \
+    gcc gcc-c++ git python3-pip unzip \
+    dotnet-sdk-8.0 \
+    libX11 libX11-devel libXext libXfixes libXrandr libXrender \
+    libXcursor libXinerama libXi libGL libEGL \
+    fontconfig alsa-lib pulseaudio-libs glib2
+</code></pre>
+<p>What each does:</p>
+<ul>
+<li><code>gcc</code>, <code>gcc-c++</code> — C and C++ compilers, needed to build <code>gd_cubism</code>.</li>
+<li><code>git</code> — to clone the <code>gd_cubism</code> source repository.</li>
+<li><code>python3-pip</code> — to install <code>scons</code> (a Python package).</li>
+<li><code>unzip</code> — to unpack the Cubism SDK.</li>
+<li><code>dotnet-sdk-8.0</code> — to compile the C# parts of Dororo. RHEL 9's AppStream ships this directly; no Microsoft repo needed.</li>
+<li><code>libX11*</code>, <code>libXext</code>, <code>libXfixes</code>, etc. — X11 client libraries the Linux/X11 port calls into for click-through and cursor tracking.</li>
+<li><code>libGL</code>, <code>libEGL</code> — OpenGL runtime for Godot's renderer.</li>
+<li><code>fontconfig</code>, <code>alsa-lib</code>, <code>pulseaudio-libs</code> — fonts and sound (Godot links these even if Dororo doesn't use sound).</li>
+<li><code>glib2</code> — provides <code>gio</code>, used for the Linux trash-bin equivalent.</li>
+</ul>
+<p>Now install <code>scons</code>:</p>
+<pre><code class="language-bash">pip3 install --user scons
+# verify
+scons --version | head -2
+</code></pre>
+<p>If <code>scons</code> is reported as "command not found", add <code>~/.local/bin</code> to your <code>PATH</code>:</p>
+<pre><code class="language-bash">echo 'export PATH=&quot;$HOME/.local/bin:$PATH&quot;' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<hr />
+<h2>4. Install Godot 4.4 — the .NET / Mono build</h2>
+<p>Godot doesn't ship as an RPM. You download a <code>.zip</code>, extract, and run the binary directly. <strong>You must use the .NET (also called "mono") build</strong>, not the regular Godot — Dororo has C# code that the non-.NET build can't run.</p>
+<pre><code class="language-bash">mkdir -p ~/godot &amp;&amp; cd ~/godot
+curl -LO https://github.com/godotengine/godot-builds/releases/download/4.4-stable/Godot_v4.4-stable_mono_linux_x86_64.zip
+unzip Godot_v4.4-stable_mono_linux_x86_64.zip
+cd Godot_v4.4-stable_mono_linux_x86_64
+# verify the binary works
+./Godot_v4.4-stable_mono_linux.x86_64 --version
+# expect: 4.4.stable.mono.official.&lt;hash&gt;
+</code></pre>
+<p>Now download the <strong>export templates</strong> — these are the actual runtime executables that Godot patches your project into when you build a release. They're a separate download.</p>
+<pre><code class="language-bash">cd /tmp
+curl -LO https://github.com/godotengine/godot-builds/releases/download/4.4-stable/Godot_v4.4-stable_mono_export_templates.tpz
+# the .tpz is just a renamed .zip
+mkdir -p ~/.local/share/godot/export_templates/4.4.stable.mono
+cd ~/.local/share/godot/export_templates/4.4.stable.mono
+python3 -m zipfile -e /tmp/Godot_v4.4-stable_mono_export_templates.tpz .
+# unzip nests under &quot;templates/&quot;, flatten it:
+mv templates/* . &amp;&amp; rmdir templates
+# verify
+ls linux_release.x86_64
+# expect: linux_release.x86_64
+</code></pre>
+<hr />
+<h2>5. Get the Live2D Cubism Native SDK</h2>
+<p>This is the only step you can't fully automate — Live2D requires you to download their SDK from their website after agreeing to a EULA. <strong>The SDK is free for personal / non-commercial use</strong> but cannot be redistributed.</p>
+<h3>Why we need it</h3>
+<p><code>gd_cubism</code> is open source, but it <em>links against</em> Live2D's proprietary native libraries (<code>libLive2DCubismCore.so</code> etc.). Without the SDK, the build will fail because the C++ source references symbols that only exist inside Live2D's libraries.</p>
+<h3>Which version</h3>
+<p><strong>We need version 5-r.1</strong>, not the latest. The <code>gd_cubism</code> source we're building uses functions (<code>GetDrawableRenderOrders</code>, <code>CubismRenderer::Create()</code> with no args) that Live2D <em>renamed</em> in later SDK releases (5-r.5 calls them <code>GetRenderOrders</code> and <code>CubismRenderer::Create(width, height)</code> instead). If you want a newer SDK you'd also have to patch <code>gd_cubism</code>'s source.</p>
+<h3>Download</h3>
+<p>Live2D's CDN serves all historical versions at predictable URLs:</p>
+<pre><code class="language-bash">mkdir -p ~/projects &amp;&amp; cd ~/projects
+curl -L -o CubismSdkForNative-5-r.1.zip \
+    https://cubism.live2d.com/sdk-native/bin/CubismSdkForNative-5-r.1.zip
+</code></pre>
+<blockquote>
+<p>If you'd rather click through the EULA properly, go to <a href="https://www.live2d.com/sdk/download/native/">https://www.live2d.com/sdk/download/native/</a>, agree to the license, and download "Cubism SDK for Native 5-r.1" from the past-versions page. Save the .zip somewhere convenient.</p>
+</blockquote>
+<hr />
+<h2>6. Build the gd_cubism native plugin</h2>
+<p>This is the C++ plugin that actually renders Live2D models inside Godot. We clone it, drop the Cubism SDK into its <code>thirdparty/</code> directory, and run <code>scons</code> to compile.</p>
+<pre><code class="language-bash">cd ~/projects
+git clone --recurse-submodules https://github.com/MizunagiKB/gd_cubism.git
+cd gd_cubism
+
+# extract the SDK into thirdparty/
+cd thirdparty
+python3 -m zipfile -e ~/projects/CubismSdkForNative-5-r.1.zip .
+# you should now have thirdparty/CubismSdkForNative-5-r.1/
+ls
+cd ..
+
+# build release variant (used by the exported game)
+scons platform=linux arch=x86_64 target=template_release -j$(nproc)
+
+# build debug variant (used when you open the project in the Godot editor)
+scons platform=linux arch=x86_64 target=template_debug -j$(nproc)
+</code></pre>
+<p>Each build takes 5–15 minutes depending on CPU. When done you'll have:</p>
+<pre><code>demo/addons/gd_cubism/bin/libgd_cubism.linux.release.x86_64.so
+demo/addons/gd_cubism/bin/libgd_cubism.linux.debug.x86_64.so
+</code></pre>
+<blockquote>
+<p><strong>If the build fails with errors about <code>GetDrawableRenderOrders</code> or <code>CubismRenderer::Create</code></strong>, you accidentally downloaded a newer Cubism SDK. Delete <code>thirdparty/CubismSdkForNative-*</code>, fetch 5-r.1 specifically (Section 5), and re-run <code>scons</code>.</p>
+</blockquote>
+<hr />
+<h2>7. Get the Dororo source</h2>
+<p>If you have the source tarball that accompanies this guide:</p>
+<pre><code class="language-bash">mkdir -p ~/projects/claude
+cd ~/projects/claude
+tar -xzf /path/to/Dororo-0.3.0-source.tar.gz
+ls Dororo-0.3.0/
+</code></pre>
+<p>Or clone from the original upstream and apply our changes manually — but the tarball is much easier.</p>
+<p>Either way, you should now have <code>~/projects/claude/Dororo-0.3.0/</code> with all the project files.</p>
+<hr />
+<h2>8. Place the gd_cubism binaries into the Dororo project</h2>
+<p>The Dororo project's <code>addons/gd_cubism/bin/</code> is empty (binaries are gitignored upstream). Copy in the ones you just built:</p>
+<pre><code class="language-bash">cp ~/projects/gd_cubism/demo/addons/gd_cubism/bin/libgd_cubism.linux.*.x86_64.so \
+   ~/projects/claude/Dororo-0.3.0/addons/gd_cubism/bin/
+
+# verify
+ls ~/projects/claude/Dororo-0.3.0/addons/gd_cubism/bin/
+# expect: libgd_cubism.linux.debug.x86_64.so  libgd_cubism.linux.release.x86_64.so
+</code></pre>
+<hr />
+<h2>9. First import + build the C# code</h2>
+<p>The Godot editor needs to do an initial pass to (a) generate import caches, and (b) build the C# DLL. Run it once headlessly:</p>
+<pre><code class="language-bash">cd ~/projects/claude/Dororo-0.3.0
+~/godot/Godot_v4.4-stable_mono_linux_x86_64/Godot_v4.4-stable_mono_linux.x86_64 \
+    --headless --import
+</code></pre>
+<p>You'll see a flurry of import messages. Some warnings are normal — <code>CubismFramework::Initialize() is complete</code> and <code>Live2D Cubism SDK Core Version 5.0.0</code> mean the plugin loaded.</p>
+<p>Then build the C# DLL:</p>
+<pre><code class="language-bash">dotnet build
+# expect: Build succeeded. 0 Warning(s). 0 Error(s).
+</code></pre>
+<p>If you see CS errors here, the C# port is broken. Read the error carefully — it'll point to a file and line. The most common cause: missing <code>using System;</code> if you've edited any <code>.cs</code> file.</p>
+<hr />
+<h2>10. Export the Linux binary</h2>
+<p>The export preset <code>[preset.1]</code> named <code>"Linux"</code> is already in <code>export_presets.cfg</code>. Run:</p>
+<pre><code class="language-bash">mkdir -p export
+~/godot/Godot_v4.4-stable_mono_linux_x86_64/Godot_v4.4-stable_mono_linux.x86_64 \
+    --headless --export-release &quot;Linux&quot; export/Dororo.x86_64
+</code></pre>
+<p>You should end up with:</p>
+<pre><code>export/
+├── Dororo.x86_64
+├── Dororo.pck
+├── libgd_cubism.linux.release.x86_64.so
+└── data_Dororo_linuxbsd_x86_64/   (.NET runtime + Dororo.dll)
+</code></pre>
+<h3>Verify the <code>.moc3</code> is packed</h3>
+<p>This is the gotcha that bit us. The Live2D <code>.moc3</code> binary file has no Godot importer, so the default export filter silently drops it. The preset uses <code>include_filter="*.moc3"</code> to force-include it. Verify:</p>
+<pre><code class="language-bash">python3 -c &quot;
+with open('export/Dororo.pck', 'rb') as f:
+    print('MOC3 packed:', b'MOC3' in f.read())
+&quot;
+# expect: MOC3 packed: True
+</code></pre>
+<p>If you ever see <code>False</code> here, the Doro will be invisible (transparent window, no character). Check <code>export_presets.cfg</code> — <code>[preset.1]</code> must have <code>include_filter="*.moc3"</code>.</p>
+<hr />
+<h2>11. Run</h2>
+<pre><code class="language-bash">cd ~/projects/claude/Dororo-0.3.0/export
+./Dororo.x86_64
+</code></pre>
+<p>You should see a transparent borderless window with the Doro character. You can:
+- Left-click + drag to move her
+- Middle-click to open a menu
+- Right-click on her body parts for expression interactions</p>
+<h3>Errors you can ignore on first launch</h3>
+<pre><code>xkbcommon: ERROR: ... unrecognized keysym &quot;dead_hamza&quot;
+</code></pre>
+<p>RHEL 9.7's Compose file uses a keysym name xkbcommon doesn't know. Harmless.</p>
+<pre><code>WARNING: Your video card drivers seem not to support the required Vulkan version, switching to OpenGL 3.
+</code></pre>
+<p>Godot falls back to OpenGL when Vulkan is missing (common in WSL or on machines without a discrete GPU). Works fine.</p>
+<pre><code>ERROR: Couldn't find the given section &quot;system&quot; and key &quot;auto_start&quot; ...
+</code></pre>
+<p>First-launch — there's no <code>config.ini</code> yet. Open settings once and tweak any value to create one; these errors will go away.</p>
+<hr />
+<h2>12. Wayland vs X11 — important for real desktops</h2>
+<p>The X11-specific features (click-through, always-on-top, global cursor query, fullscreen detection) <strong>only work in an X11 session</strong>, not Wayland. Wayland intentionally hides these capabilities from clients.</p>
+<p><strong>On RHEL 9 GNOME</strong>: at the login screen, click the gear icon and pick <strong>"GNOME on Xorg"</strong> instead of the default "GNOME". After login, verify:</p>
+<pre><code class="language-bash">echo $XDG_SESSION_TYPE
+# expect: x11    (NOT wayland)
+</code></pre>
+<p>If you're on Wayland, the app will still run, but the desktop-pet illusion is broken — mouse follow won't track outside the window, click-through won't pass clicks to apps behind, etc.</p>
+<p><strong>On WSL2 with WSLg</strong>: WSLg uses XWayland (X11 emulation on top of Wayland). Most features work but mouse follow is limited to within the WSL session — moving your mouse over Windows apps won't update Doro's gaze. You'll also see software-rendered OpenGL (Mesa/llvmpipe) which is slower than a real GPU.</p>
+<hr />
+<h2>13. Common build problems and fixes</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scons</code> build fails: <code>'GetDrawableRenderOrders' not a member of CubismModel</code></td>
+<td>Wrong Cubism SDK version</td>
+<td>Re-download SDK 5-r.1 (not 5-r.5+), wipe <code>thirdparty/CubismSdkForNative-*</code>, re-extract</td>
+</tr>
+<tr>
+<td><code>unzip: command not found</code></td>
+<td><code>unzip</code> package missing</td>
+<td><code>sudo dnf install unzip</code></td>
+</tr>
+<tr>
+<td><code>dotnet build</code> error: <code>Environment is an ambiguous reference between 'Godot.Environment' and 'System.Environment'</code></td>
+<td>C# namespace collision</td>
+<td>Fully qualify: <code>System.Environment.GetEnvironmentVariable(...)</code></td>
+</tr>
+<tr>
+<td>Export shows transparent window but no Doro</td>
+<td><code>.moc3</code> missing from pack</td>
+<td>Check <code>export_presets.cfg</code> <code>[preset.1]</code> has <code>include_filter="*.moc3"</code>; re-export</td>
+</tr>
+<tr>
+<td>Window opens, Doro renders, but <code>csmReviveMocInPlace: "size" is invalid</code> errors in console</td>
+<td>Same as above — <code>.moc3</code> is empty / missing</td>
+<td>Re-export with <code>include_filter="*.moc3"</code></td>
+</tr>
+<tr>
+<td>Settings dialog opens but checkboxes don't respond</td>
+<td>Subwindow focus issue on WSLg / older WMs</td>
+<td>Make sure <code>project.godot</code> has <code>window/subwindows/embed_subwindows=true</code></td>
+</tr>
+<tr>
+<td>Window won't appear at all</td>
+<td>Compositor not running, or X session crashed</td>
+<td>Try <code>gnome-shell --replace</code> (X11) or just relogin</td>
+</tr>
+<tr>
+<td><code>libgd_cubism.linux.release.x86_64.so</code> fails to load: missing libstdc++</td>
+<td>Missing runtime</td>
+<td><code>sudo dnf install gcc-c++</code></td>
+</tr>
+<tr>
+<td><code>gio: command not found</code> when using trash drag-and-drop</td>
+<td><code>glib2</code> missing</td>
+<td><code>sudo dnf install glib2</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>14. What we changed vs. the upstream Dororo project</h2>
+<p>If you're curious what's different from the original Windows project:</p>
+<ul>
+<li><strong><code>scripts/cs/Linux/X11Native.cs</code></strong> (new) — X11 P/Invoke helpers (<code>XQueryPointer</code>, <code>XShapeCombineRectangles</code>, EWMH ClientMessage senders, <code>_NET_ACTIVE_WINDOW</code> reader)</li>
+<li><strong><code>scripts/cs/WindowManager.cs</code></strong>, <code>MouseTracker.cs</code>, <code>HideTaskBarIcon.cs</code>, <code>FullscreenDetector.cs</code>, <code>FileAPI.cs</code>, <code>AutoStarter.cs</code> — dual-platform via runtime <code>OperatingSystem.IsWindows() / IsLinux()</code> branching. Windows path unchanged; Linux uses X11/EWMH/XDG equivalents.</li>
+<li><strong><code>scripts/cs/MouseDetection.cs</code></strong> — viewport-readback click-through toggle Windows-only (it conflicts with sub-windows on Linux X servers; harmless to leave off, you keep clicking the window).</li>
+<li><strong><code>scripts/gd/interact/hit_area_handler.gd</code></strong> — fixed a math bug where the wandering Doro's hit detection didn't work when facing right.</li>
+<li><strong><code>scripts/gd/ui/setting/setting_window.gd</code></strong> — Settings window grabs focus when opened (needed on some Linux WMs).</li>
+<li><strong><code>scenes/main.tscn</code></strong> — LLM-chat feature removed (nodes deleted, <code>load_steps</code> adjusted).</li>
+<li><strong><code>prefabs/ui/tool_bar.tscn</code></strong>, <code>scripts/gd/ui/toolbar/toolbar.gd</code>, <code>setting_chat.gd</code>, <code>setting_interact.gd</code> — chat-related wiring removed / nulled out.</li>
+<li><strong><code>export_presets.cfg</code></strong> — added <code>[preset.1]</code> "Linux" with <code>include_filter="*.moc3"</code>.</li>
+<li><strong><code>project.godot</code></strong> — <code>window/subwindows/embed_subwindows=true</code>.</li>
+</ul>
+<p>The chat removal is separate from the Linux port; if you want chat back, restore those files from upstream.</p>
+<hr />
+<h2>15. Editing and re-exporting</h2>
+<p>Once you've built everything once, the iteration loop is:</p>
+<ol>
+<li>Edit <code>.gd</code> or <code>.cs</code> files in your editor of choice (or open the project in the Godot editor at <code>~/godot/Godot_v4.4-stable_mono_linux_x86_64/Godot_v4.4-stable_mono_linux.x86_64 --path ~/projects/claude/Dororo-0.3.0/</code>).</li>
+<li><code>dotnet build</code> if you changed C# files.</li>
+<li><code>~/godot/.../Godot_v4.4-stable_mono_linux.x86_64 --headless --export-release "Linux" export/Dororo.x86_64</code>.</li>
+<li><code>./export/Dororo.x86_64</code> to test.</li>
+</ol>
+<p><code>.gd</code> (GDScript) changes don't need <code>dotnet build</code> — they're interpreted at runtime from inside the <code>.pck</code>.</p>
+<hr />
+<h2>16. License notes</h2>
+<ul>
+<li><strong>Dororo</strong> — see <code>LICENSE</code> in the project root (original project's terms).</li>
+<li><strong>gd_cubism</strong> — MIT (the source). Live2D itself imposes additional terms on the SDK binaries.</li>
+<li><strong>Live2D Cubism Native SDK</strong> — proprietary. Free for personal / non-commercial use only. You may not redistribute the SDK files. The compiled <code>.so</code> you build <em>does</em> contain Live2D's code statically linked — distribute that under Live2D's license, not MIT.</li>
+</ul>
+<p>If you're doing anything commercial, read Live2D's license thoroughly first.</p>
+<hr />
+<p>That's the whole flow. Most pain points come from missing system packages, wrong Cubism SDK version, or the <code>.moc3</code> filter — Section 13 has the recipes for all the symptoms we hit while developing this port.</p>
+  <footer class="colophon">
+    Dororo · RHEL 9 port · documentation set v1
+  </footer>
+</main>
+</body>
+</html>
