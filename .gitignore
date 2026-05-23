@@ -1,0 +1,35 @@
+# Godot editor cache
+.godot/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+.claude/
+
+# C# build outputs
+bin/
+obj/
+
+# Godot export outputs
+/export/
+
+# User runtime config
+config.ini
+
+# Live2D Cubism Native SDK binaries — license-restricted, build from source
+# See doc/build-guide.html for instructions
+/addons/gd_cubism/bin/*.so
+/addons/gd_cubism/bin/*.dll
+/addons/gd_cubism/bin/*.dylib
+/addons/gd_cubism/bin/*.framework/
+
+# Build/test artifacts
+*.tar.gz
+*.zip
+*.pck
+*.x86_64
+
+# OS junk
+.DS_Store
+Thumbs.db
